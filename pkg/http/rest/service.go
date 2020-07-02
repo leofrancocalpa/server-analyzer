@@ -111,6 +111,6 @@ func StartServer() {
 	router.GET("/servers", listServersRequestHandler)
 
 	fmt.Println("****** SERVER UP *********")
-	log.Fatal(fasthttp.ListenAndServe(":8888", router.Handler))
+	log.Fatal(fasthttp.ListenAndServe(":8888", Cors(router.Handler)))
 
 }
