@@ -57,16 +57,6 @@ func analyzeRequestHandler(ctx *fasthttp.RequestCtx) {
 		servers = append(servers, serv)
 	}
 
-	for i := 0; i < len(resultServerInfo.Enpoints); i++ {
-		var serv model.Server
-		serv.Address = resultServerInfo.Enpoints[i].IPAddress
-		serv.Country = resultServerInfo.Enpoints[i].Country
-		serv.Owner = resultServerInfo.Enpoints[i].Owner
-		serv.SSLGrade = resultServerInfo.Enpoints[i].Grade
-
-		servers = append(servers, serv)
-	}
-
 	analysis.Servers = servers
 	fmt.Println(">>> ", servers)
 	json.NewEncoder(ctx.Response.BodyWriter()).Encode(analysis)

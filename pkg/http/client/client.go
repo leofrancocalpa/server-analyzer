@@ -9,7 +9,7 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-var grades = []string{"A", "B", "C", "D", "E", "F"}
+var grades = []string{"A+", "A", "B", "C", "D", "E", "F"}
 
 // DoRequest GET http request to SSLLABS - WHOIS
 func DoRequest(url string, host string) ResultServerInfo {
