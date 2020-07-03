@@ -68,7 +68,7 @@ func analyzeRequestHandler(ctx *fasthttp.RequestCtx) {
 	}
 
 	analysis.Servers = servers
-	fmt.Println(">>> ", servers[0].Address)
+	fmt.Println(">>> ", servers)
 	json.NewEncoder(ctx.Response.BodyWriter()).Encode(analysis)
 
 	jsonData, _ := json.Marshal(analysis)
