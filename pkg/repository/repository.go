@@ -33,15 +33,26 @@ func NewRepository() Repository {
 
 //CreateServerInfo persist in the DB the serverInfo queried
 func (repo ServerInfoRepository) CreateServerInfo(serverInfo model.ServerInfo) {
-	sqlstm := `INSERT INTO serverinfo (dns, data)
-	VALUES ($1, $2)`
-	sqlresult, err := repo.db.Exec(sqlstm, serverInfo.DNS, serverInfo.Data)
-	if err != nil {
-		fmt.Println("[ERROR] FAILURE CREATING")
-		repo.Close()
-		panic(err.Error())
+	sqlstm0 := `SELECT count(*) FROM serverinfo WHERE dns='` + serverInfo.DNS + `'`
+	rows, _ := repo.db.Query(sqlstm0)
+	var count int
+	rows.Next()
+	rows.Scan(&count)
+
+	if count < 1 {
+		sqlstm := `INSERT INTO serverinfo (dns, data)
+		VALUES ($1, $2)`
+		sqlresult, err := repo.db.Exec(sqlstm, serverInfo.DNS, serverInfo.Data)
+		if err != nil {
+			fmt.Println("[ERROR] FAILURE CREATING")
+			repo.Close()
+			panic(err.Error())
+		}
+		fmt.Println("CREATE STATUS: ", sqlresult)
+	} else {
+		fmt.Println("[DB] The entry already exists, the data was not persisted")
 	}
-	fmt.Println("CREATE STATUS: ", sqlresult)
+
 }
 
 //FetchServersInfo obtains all servers info queried before
