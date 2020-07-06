@@ -17,13 +17,19 @@ import (
 const (
 	//APISSLLABS f
 	APISSLLABS = "https://api.ssllabs.com/api/v3/analyze?host="
+
+	PORT = ":8888"
+
+	APIBASE     = "/api/v1"
+	URL_SERVERS = APIBASE + "/servers"
+	URL_ANALYZE = URL_SERVERS + "/analyze"
 )
 
 var repo repository.Repository
 
 func index(ctx *fasthttp.RequestCtx) {
 
-	fmt.Fprintln(ctx, "http://localhost:8888/services \n http://localhost:8888/services/analyze?host=<server name>")
+	fmt.Fprintln(ctx, "http://localhost:8888/services \nhttp://localhost:8888/services/analyze?host=<server name>")
 }
 
 func analyzeRequestHandler(ctx *fasthttp.RequestCtx) {
@@ -97,10 +103,10 @@ func StartServer() {
 	router := fasthttprouter.New()
 
 	router.GET("/", index)
-	router.GET("/servers/analyze", analyzeRequestHandler)
-	router.GET("/servers", listServersRequestHandler)
+	router.GET(URL_ANALYZE, analyzeRequestHandler)
+	router.GET(URL_SERVERS, listServersRequestHandler)
 
 	fmt.Println("****** SERVER UP *********")
-	log.Fatal(fasthttp.ListenAndServe(":8888", Cors(router.Handler)))
+	log.Fatal(fasthttp.ListenAndServe(PORT, Cors(router.Handler)))
 
 }

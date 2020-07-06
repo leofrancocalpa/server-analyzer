@@ -73,7 +73,7 @@ func getHTMLInfo(hostname string) (string, string) {
 	} else {
 		url = "https://" + hostname
 	}
-	title, logo := ScrapingHead(url)
+	title, logo := GetTitleAndIcon(url)
 	return title, logo
 }
 

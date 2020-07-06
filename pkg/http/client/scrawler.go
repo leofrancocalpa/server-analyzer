@@ -2,40 +2,21 @@ package client
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
-	"github.com/PuerkitoBio/goquery"
+	"github.com/badoux/goscraper"
 )
 
-//ScrapingHead obtains data from HTML <head> tag
-func ScrapingHead(hostname string) (string, string) {
-
-	doc, err := goquery.NewDocument(hostname)
+// GetTitleAndIcon return page Title, Icon
+func GetTitleAndIcon(hostname string) (string, string) {
+	s, err := goscraper.Scrape(hostname, 5)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		return "", ""
 	}
-	var title string
-	var link string
-
-	title = doc.Find("title").Contents().Text()
-
-	doc.Find("link").EachWithBreak(func(i int, s *goquery.Selection) bool {
-		// For each item found, icon link
-		href, _ := s.Attr("href")
-		rel, _ := s.Attr("rel")
-		//fmt.Printf("Review %d: %s - %s\n", i, rel, href)
-		if strings.Contains(rel, "icon") {
-			link = href
-
-			if !strings.Contains(link, "http") {
-				link = hostname + link
-			}
-			return false
-		}
-		return true
-	},
-	)
-	fmt.Println("scraped: ", title, link)
-	return title, link
+	icon := s.Preview.Icon
+	if !strings.Contains(icon, "http") {
+		icon = hostname + icon
+	}
+	return s.Preview.Title, icon
 }
