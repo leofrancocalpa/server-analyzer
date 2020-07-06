@@ -78,9 +78,10 @@ func getHTMLInfo(hostname string) (string, string) {
 }
 
 //Get the country and owner using whois command
-func whoisRequest(ipaddress string) []string {
+func whoisRequest(ipaddress string) [2]string {
 	fmt.Println("whois: ", ipaddress)
-
+	owner := true
+	country := true
 	result, err := whois.Whois(ipaddress)
 	if err != nil {
 		fmt.Println("[ERROR] Failure getting whois request")
@@ -88,15 +89,16 @@ func whoisRequest(ipaddress string) []string {
 	//fmt.Println(result)
 
 	lines := strings.Split(result, "\n")
-	var data []string
+	var data [2]string
 	for _, value := range lines {
-		if strings.Contains(value, "OrgName:") || strings.Contains(value, "owner:") || strings.Contains(value, "org-name:") {
+		if owner && (strings.Contains(value, "OrgName:") || strings.Contains(value, "owner:") || strings.Contains(value, "org-name:")) {
 			line := strings.Split(value, ": ")
-			data = append(data, strings.TrimSpace(line[1]))
-		} else if strings.Contains(value, "Country:") || strings.Contains(value, "country") {
+			data[0] = strings.TrimSpace(line[1])
+			owner = false
+		} else if country && (strings.Contains(value, "Country:") || strings.Contains(value, "country")) {
 			line := strings.Split(value, ": ")
-
-			data = append(data, strings.TrimSpace(line[1]))
+			data[1] = strings.TrimSpace(line[1])
+			country = false
 		}
 	}
 	fmt.Println(data)
@@ -105,7 +107,7 @@ func whoisRequest(ipaddress string) []string {
 
 func lowestSSLGrade(endpoints []Enpoint) string {
 	fmt.Println("Calculing lowest ssl grade")
-	result := "A"
+	result := "A+"
 	index := 0
 	for _, value := range endpoints {
 		i := indexOf(value.Grade, grades)
