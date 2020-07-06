@@ -40,7 +40,9 @@ func DoRequest(url string, host string) ResultServerInfo {
 	reslt.Title = title
 	reslt.Logo = logo
 
-	fmt.Println(reslt)
+	//fmt.Println(reslt)
+	fmt.Println("==== fiish client requests ====")
+
 	return reslt
 }
 
